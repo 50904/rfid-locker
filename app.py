@@ -11,7 +11,7 @@ from PySide6.QtGui import QPixmap, QCursor # Picture handling and cursor changes
 
 from app_ui import Ui_MainWindow # Translated GUI class
 
-class MainWindows(QtWidgets.QMainWindow, Ui_MainWindow):
+class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
 
@@ -21,7 +21,7 @@ class MainWindows(QtWidgets.QMainWindow, Ui_MainWindow):
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
 
-    window = MainWindows()
+    window = MainWindow()
     window.show()
 
     sys.exit(app.exec())
