@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1619</width>
-    <height>1179</height>
+    <width>1594</width>
+    <height>968</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -57,7 +57,7 @@
           <enum>QFrame::Shape::NoFrame</enum>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>4</number>
          </property>
          <widget class="QWidget" name="scanPage"/>
          <widget class="QWidget" name="menuPage">
@@ -325,7 +325,7 @@
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>22</pointsize>
+                  <pointsize>24</pointsize>
                  </font>
                 </property>
                 <property name="cursor">
@@ -365,7 +365,7 @@
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>22</pointsize>
+                  <pointsize>24</pointsize>
                  </font>
                 </property>
                 <property name="cursor">
@@ -389,7 +389,7 @@
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>22</pointsize>
+                  <pointsize>24</pointsize>
                  </font>
                 </property>
                 <property name="cursor">
@@ -573,6 +573,11 @@
                   <height>50</height>
                  </size>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>18</pointsize>
+                 </font>
+                </property>
                 <property name="cursor">
                  <cursorShape>PointingHandCursor</cursorShape>
                 </property>
@@ -673,6 +678,11 @@
                   <height>60</height>
                  </size>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>24</pointsize>
+                 </font>
+                </property>
                 <property name="cursor">
                  <cursorShape>PointingHandCursor</cursorShape>
                 </property>
@@ -713,6 +723,11 @@
                   <width>200</width>
                   <height>60</height>
                  </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>24</pointsize>
+                 </font>
                 </property>
                 <property name="cursor">
                  <cursorShape>PointingHandCursor</cursorShape>
@@ -831,6 +846,11 @@
                   <height>50</height>
                  </size>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>18</pointsize>
+                 </font>
+                </property>
                 <property name="cursor">
                  <cursorShape>PointingHandCursor</cursorShape>
                 </property>
@@ -931,6 +951,11 @@
                   <height>60</height>
                  </size>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>24</pointsize>
+                 </font>
+                </property>
                 <property name="cursor">
                  <cursorShape>PointingHandCursor</cursorShape>
                 </property>
@@ -971,6 +996,11 @@
                   <width>200</width>
                   <height>60</height>
                  </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>24</pointsize>
+                 </font>
                 </property>
                 <property name="cursor">
                  <cursorShape>PointingHandCursor</cursorShape>
@@ -1028,7 +1058,7 @@
                </spacer>
               </item>
               <item>
-               <widget class="QLabel" name="historyPageistoryLabel_2">
+               <widget class="QLabel" name="historyPageLabel">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
                   <horstretch>0</horstretch>
@@ -1084,7 +1114,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QFrame" name="frame_6">
+            <widget class="QFrame" name="historyFilterFrame">
              <property name="frameShape">
               <enum>QFrame::Shape::Box</enum>
              </property>
@@ -1108,7 +1138,7 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="QFrame" name="frame_2">
+               <widget class="QFrame" name="historyStartDateFrame">
                 <property name="frameShape">
                  <enum>QFrame::Shape::Box</enum>
                 </property>
@@ -1129,7 +1159,7 @@
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="QLabel" name="label_2">
+                  <widget class="QLabel" name="historySartDateLabel">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -1138,7 +1168,7 @@
                    </property>
                    <property name="font">
                     <font>
-                     <pointsize>12</pointsize>
+                     <pointsize>16</pointsize>
                     </font>
                    </property>
                    <property name="text">
@@ -1150,23 +1180,7 @@
                   </widget>
                  </item>
                  <item>
-                  <spacer name="horizontalSpacer_17">
-                   <property name="orientation">
-                    <enum>Qt::Orientation::Horizontal</enum>
-                   </property>
-                   <property name="sizeType">
-                    <enum>QSizePolicy::Policy::Fixed</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item>
-                  <widget class="QDateEdit" name="dateEdit">
+                  <widget class="QDateEdit" name="historyStartDateEdit">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -1181,7 +1195,7 @@
                    </property>
                    <property name="font">
                     <font>
-                     <pointsize>12</pointsize>
+                     <pointsize>18</pointsize>
                     </font>
                    </property>
                    <property name="cursor">
@@ -1199,7 +1213,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QFrame" name="frame_3">
+               <widget class="QFrame" name="historyEndDateFrame">
                 <property name="frameShape">
                  <enum>QFrame::Shape::Box</enum>
                 </property>
@@ -1220,7 +1234,7 @@
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="QLabel" name="label_3">
+                  <widget class="QLabel" name="historyEndDateLabel">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -1229,7 +1243,7 @@
                    </property>
                    <property name="font">
                     <font>
-                     <pointsize>12</pointsize>
+                     <pointsize>16</pointsize>
                     </font>
                    </property>
                    <property name="text">
@@ -1241,23 +1255,7 @@
                   </widget>
                  </item>
                  <item>
-                  <spacer name="horizontalSpacer_18">
-                   <property name="orientation">
-                    <enum>Qt::Orientation::Horizontal</enum>
-                   </property>
-                   <property name="sizeType">
-                    <enum>QSizePolicy::Policy::Fixed</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item>
-                  <widget class="QDateEdit" name="dateEdit_2">
+                  <widget class="QDateEdit" name="historyEndDateEdit">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -1266,7 +1264,7 @@
                    </property>
                    <property name="font">
                     <font>
-                     <pointsize>12</pointsize>
+                     <pointsize>18</pointsize>
                     </font>
                    </property>
                    <property name="cursor">
@@ -1284,7 +1282,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QFrame" name="frame_4">
+               <widget class="QFrame" name="historyUserFrame">
                 <property name="frameShape">
                  <enum>QFrame::Shape::Box</enum>
                 </property>
@@ -1305,7 +1303,7 @@
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="QLabel" name="label_4">
+                  <widget class="QLabel" name="historyUserLabel">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -1314,7 +1312,7 @@
                    </property>
                    <property name="font">
                     <font>
-                     <pointsize>12</pointsize>
+                     <pointsize>16</pointsize>
                     </font>
                    </property>
                    <property name="text">
@@ -1326,26 +1324,16 @@
                   </widget>
                  </item>
                  <item>
-                  <spacer name="horizontalSpacer_19">
-                   <property name="orientation">
-                    <enum>Qt::Orientation::Horizontal</enum>
-                   </property>
-                   <property name="sizeType">
-                    <enum>QSizePolicy::Policy::Fixed</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
+                  <widget class="QComboBox" name="historyUserComboBox">
+                   <property name="minimumSize">
                     <size>
-                     <width>40</width>
-                     <height>20</height>
+                     <width>0</width>
+                     <height>0</height>
                     </size>
                    </property>
-                  </spacer>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="comboBox_4">
                    <property name="font">
                     <font>
-                     <pointsize>12</pointsize>
+                     <pointsize>16</pointsize>
                     </font>
                    </property>
                    <property name="cursor">
@@ -1360,7 +1348,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QFrame" name="frame_5">
+               <widget class="QFrame" name="historyToolFrame">
                 <property name="frameShape">
                  <enum>QFrame::Shape::Box</enum>
                 </property>
@@ -1381,7 +1369,7 @@
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="QLabel" name="label_5">
+                  <widget class="QLabel" name="historyToolLable">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -1390,7 +1378,7 @@
                    </property>
                    <property name="font">
                     <font>
-                     <pointsize>12</pointsize>
+                     <pointsize>16</pointsize>
                     </font>
                    </property>
                    <property name="text">
@@ -1402,26 +1390,10 @@
                   </widget>
                  </item>
                  <item>
-                  <spacer name="horizontalSpacer_20">
-                   <property name="orientation">
-                    <enum>Qt::Orientation::Horizontal</enum>
-                   </property>
-                   <property name="sizeType">
-                    <enum>QSizePolicy::Policy::Fixed</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="comboBox_5">
+                  <widget class="QComboBox" name="historyToolComboBox">
                    <property name="font">
                     <font>
-                     <pointsize>12</pointsize>
+                     <pointsize>16</pointsize>
                     </font>
                    </property>
                    <property name="cursor">
@@ -1452,7 +1424,7 @@
                </spacer>
               </item>
               <item>
-               <widget class="QPushButton" name="historySeachPushButton">
+               <widget class="QPushButton" name="historySearchPushButton">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1465,11 +1437,19 @@
                   <height>30</height>
                  </size>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>24</pointsize>
+                 </font>
+                </property>
+                <property name="cursor">
+                 <cursorShape>PointingHandCursor</cursorShape>
+                </property>
                 <property name="styleSheet">
                  <string notr="true">background-color: rgb(65, 65, 65);</string>
                 </property>
                 <property name="text">
-                 <string>Seach</string>
+                 <string>Search</string>
                 </property>
                </widget>
               </item>
@@ -1493,7 +1473,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QFrame" name="frame_7">
+            <widget class="QFrame" name="historyTableFrame">
              <property name="frameShape">
               <enum>QFrame::Shape::Box</enum>
              </property>
@@ -1514,12 +1494,32 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="QTableWidget" name="tableWidget">
+               <widget class="QTableWidget" name="historyTableWidget">
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
+                <property name="cursor" stdset="0">
+                 <cursorShape>PointingHandCursor</cursorShape>
+                </property>
+                <property name="autoFillBackground">
+                 <bool>false</bool>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(65, 65, 65);</string>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::Shape::Box</enum>
                 </property>
                 <property name="frameShadow">
                  <enum>QFrame::Shadow::Plain</enum>
+                </property>
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
+                </property>
+                <property name="textElideMode">
+                 <enum>Qt::TextElideMode::ElideRight</enum>
                 </property>
                 <attribute name="horizontalHeaderCascadingSectionResizes">
                  <bool>false</bool>
@@ -1530,32 +1530,63 @@
                 <attribute name="verticalHeaderCascadingSectionResizes">
                  <bool>false</bool>
                 </attribute>
+                <attribute name="verticalHeaderMinimumSectionSize">
+                 <number>24</number>
+                </attribute>
+                <attribute name="verticalHeaderDefaultSectionSize">
+                 <number>30</number>
+                </attribute>
                 <attribute name="verticalHeaderStretchLastSection">
                  <bool>false</bool>
                 </attribute>
                 <column>
                  <property name="text">
-                  <string>Start date</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>End date</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
                   <string>User</string>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>12</pointsize>
+                  </font>
                  </property>
                 </column>
                 <column>
                  <property name="text">
                   <string>Tool</string>
                  </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>12</pointsize>
+                  </font>
+                 </property>
                 </column>
                 <column>
                  <property name="text">
                   <string>Tool description</string>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>12</pointsize>
+                  </font>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Start date</string>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>12</pointsize>
+                  </font>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>End date</string>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>12</pointsize>
+                  </font>
                  </property>
                 </column>
                </widget>
@@ -1611,6 +1642,11 @@
                   <height>60</height>
                  </size>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>24</pointsize>
+                 </font>
+                </property>
                 <property name="cursor">
                  <cursorShape>PointingHandCursor</cursorShape>
                 </property>
@@ -1652,6 +1688,11 @@
                   <height>60</height>
                  </size>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>24</pointsize>
+                 </font>
+                </property>
                 <property name="cursor">
                  <cursorShape>PointingHandCursor</cursorShape>
                 </property>
@@ -1680,7 +1721,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1619</width>
+     <width>1594</width>
      <height>33</height>
     </rect>
    </property>
