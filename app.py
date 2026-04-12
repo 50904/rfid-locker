@@ -18,6 +18,29 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.threadPool = QThreadPool.globalInstance()
         self.setupUi(self)
 
+        # connections for the menuPage buttons
+        self.takePushButton.clicked.connect(self.go_to_takePage)
+        self.returnPushButton.clicked.connect(self.go_to_returnPage)
+        self.historyPushButton.clicked.connect(self.go_to_historyPage)
+
+        # connections for the back buttons on each page
+        self.takeBackPushButton.clicked.connect(self.go_to_menuPage)
+        self.returnBackPushButton.clicked.connect(self.go_to_menuPage)
+        self.historyBackPushButton.clicked.connect(self.go_to_menuPage)
+
+    # Functions that takes the user to the connenected page
+    def go_to_menuPage(self):
+     self.stackedWidget.setCurrentWidget(self.menuPage)
+    
+    def go_to_takePage(self):
+     self.stackedWidget.setCurrentWidget(self.takePage)
+    
+    def go_to_returnPage(self):
+     self.stackedWidget.setCurrentWidget(self.returnPage)
+    
+    def go_to_historyPage(self):
+     self.stackedWidget.setCurrentWidget(self.historyPage)
+
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
 
