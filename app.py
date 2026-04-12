@@ -6,6 +6,7 @@ import sys # Startup arguments
 import json # JSON handling
  
 from PySide6 import QtWidgets # QtWidgets
+from PySide6.QtWidgets import QCalendarWidget # QCaledarWidget
 from PySide6.QtCore import QThreadPool, Slot, Qt, QByteArray # Threading, slot-decorators and Qt
 from PySide6.QtGui import QPixmap, QCursor # Picture handling and cursor changes
 
@@ -18,15 +19,39 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.threadPool = QThreadPool.globalInstance()
         self.setupUi(self)
 
-        # connections for the menuPage buttons
+        # Connections for the menuPage buttons
         self.takePushButton.clicked.connect(self.go_to_takePage)
         self.returnPushButton.clicked.connect(self.go_to_returnPage)
         self.historyPushButton.clicked.connect(self.go_to_historyPage)
 
-        # connections for the back buttons on each page
+        # Connections for the back buttons on each page
         self.takeBackPushButton.clicked.connect(self.go_to_menuPage)
         self.returnBackPushButton.clicked.connect(self.go_to_menuPage)
         self.historyBackPushButton.clicked.connect(self.go_to_menuPage)
+
+        # Set a default size for all columns in the history tableWidget
+        self.historyTableWidget.setColumnWidth(0,208)
+        self.historyTableWidget.setColumnWidth(1,208)
+        self.historyTableWidget.setColumnWidth(2,208)
+        self.historyTableWidget.setColumnWidth(3,208)
+        self.historyTableWidget.setColumnWidth(4,208)
+
+        # Variables to be used in resizing DateEdit widget's size
+        calendar = QCalendarWidget()
+        calendar.setMinimumSize(500,400)
+
+        # Variables to be used in resizing DateEdit widget's font
+        calendarFont = calendar.font()
+        calendarFont.setPointSize(18)
+
+        # Resizeing the calendar in QDateEdit widget
+        self.historyStartDateEdit.setCalendarWidget(calendar)
+        self.historyEndDateEdit.setCalendarWidget(calendar)
+
+        # Resizeing the calendar font size in QDateEdit widget
+        calendar.setFont(calendarFont)
+        
+        
 
     # Functions that takes the user to the connenected page
     def go_to_menuPage(self):
