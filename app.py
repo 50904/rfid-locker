@@ -37,19 +37,26 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.historyTableWidget.setColumnWidth(4,208)
 
         # Variables to be used in resizing DateEdit widget's size
-        calendar = QCalendarWidget()
-        calendar.setMinimumSize(500,400)
+        calendarStart = QCalendarWidget()
+        calendarStart.setMinimumSize(500,400)
+
+        calendarEnd = QCalendarWidget()
+        calendarEnd.setMinimumSize(500,400)
 
         # Variables to be used in resizing DateEdit widget's font
-        calendarFont = calendar.font()
-        calendarFont.setPointSize(18)
+        calendarStartFont = calendarStart.font()
+        calendarStartFont.setPointSize(18)
+
+        calendarEndFont = calendarStart.font()
+        calendarEndFont.setPointSize(18)
 
         # Resizeing the calendar in QDateEdit widget
-        self.historyStartDateEdit.setCalendarWidget(calendar)
-        self.historyEndDateEdit.setCalendarWidget(calendar)
+        self.historyStartDateEdit.setCalendarWidget(calendarStart)
+        self.historyEndDateEdit.setCalendarWidget(calendarEnd)
 
         # Resizeing the calendar font size in QDateEdit widget
-        calendar.setFont(calendarFont)
+        calendarStart.setFont(calendarStartFont)
+        calendarEnd.setFont(calendarEndFont)
         
         
 
