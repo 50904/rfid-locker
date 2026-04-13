@@ -23,6 +23,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.takePushButton.clicked.connect(self.go_to_takePage)
         self.returnPushButton.clicked.connect(self.go_to_returnPage)
         self.historyPushButton.clicked.connect(self.go_to_historyPage)
+        self.scanPageMenuPushButton.clicked.connect(self.go_to_menuPage)
 
         # Connections for the back buttons on each page
         self.takeBackPushButton.clicked.connect(self.go_to_menuPage)
