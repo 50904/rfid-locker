@@ -17,6 +17,7 @@ from PySide6.QtCore import QThreadPool, Slot, Qt, QByteArray, QTimer, QDate # Th
 from PySide6.QtGui import QPixmap, QCursor # Picture handling and cursor changes
 
 from app_ui import Ui_MainWindow # Translated GUI class
+DEBUG = True
 
 
 if sys.platform.startswith("linux"):
@@ -80,12 +81,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.return_items = []
         self.current_rfid = None
         self.mqtt_available = False
+        self.rfid_reader = None
+        self.last_rfid_read_at = 0.0
+        self.rfid_error_reported = False
 
         # Connections for the menuPage buttons
         self.takePushButton.clicked.connect(self.go_to_takePage)
         self.returnPushButton.clicked.connect(self.go_to_returnPage)
         self.historyPushButton.clicked.connect(self.go_to_historyPage)
         self.scanPageMenuPushButton.clicked.connect(self.go_to_menuPage)
+
+        # Locker_gui style RFID reader control on scan page.
+        self.setup_scanpage_rfid_reader_controls()
 
         # Connections for the back buttons on each page
         self.takeBackPushButton.clicked.connect(self.go_to_menuPage)
@@ -135,6 +142,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.stale_timer.timeout.connect(self.prune_stale_lockers)
         self.stale_timer.start(self.STALE_CHECK_INTERVAL_MS)
 
+        # Continuous RFID scan loop for scan page.
+        self.rfid_scan_timer = QTimer(self)
+        self.rfid_scan_timer.timeout.connect(self.poll_rfid_scan)
+        self.rfid_scan_timer.start(200)
+
         # PostgreSQL setup for RFID and locker event logging
         self.init_database()
 
@@ -165,6 +177,41 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def go_to_scanPage(self):
         self.stackedWidget.setCurrentWidget(self.scanPage)
+        if RFID_IMPORT_ERROR is None:
+            self.set_info_status("Status: waiting for RFID tag...")
+        else:
+            self.show_error(f"RFID import failed: {RFID_IMPORT_ERROR}", show_popup=False)
+
+    def setup_scanpage_rfid_reader_controls(self):
+        """Add RFID reader controls to scanPage (locker_gui style)."""
+        self.scanReadRfidPushButton = QPushButton("Lue RFID-tagi")
+        self.scanReadRfidPushButton.setMinimumSize(220, 56)
+        self.scanReadRfidPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.scanReadRfidPushButton.clicked.connect(self.handle_scanpage_read_button)
+        self.scanReadRfidPushButton.setEnabled(RFID_IMPORT_ERROR is None)
+
+        self.horizontalLayout_11.insertWidget(0, self.scanReadRfidPushButton)
+
+        if RFID_IMPORT_ERROR is None:
+            self.scanPageLabel.setText("RFID Reader")
+            self.waitingForTagLabel.setText("RFID imports loaded. Bring tag near the reader.")
+            self.scanFailedLabel.hide()
+        else:
+            self.scanPageLabel.setText("RFID Reader")
+            self.scanFailedLabel.setText(f"RFID import failed: {RFID_IMPORT_ERROR}")
+            self.scanFailedLabel.show()
+
+    def handle_scanpage_read_button(self):
+        """Manual scanPage RFID read via button."""
+        self.set_info_status("Status: waiting for RFID tag...")
+        self.read_rfid_tag(non_blocking=False, show_popup_on_error=True)
+
+    def poll_rfid_scan(self):
+        """Poll RFID reader continuously while scan page is visible."""
+        if self.stackedWidget.currentWidget() is not self.scanPage:
+            return
+
+        self.read_rfid_tag(non_blocking=True, show_popup_on_error=False)
 
     def init_mqtt_connection(self):
         """Initialize MQTT connection in non-blocking mode."""
@@ -318,6 +365,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         env_rfid = os.getenv("RFID_LOCKER_RFID")
         if env_rfid:
             return env_rfid
+        if DEBUG:
+            return "67890"
         return None
 
     def get_active_user_name(self):
@@ -542,17 +591,38 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.historyTableWidget.setItem(row_index, 4, QTableWidgetItem(self.format_datetime(row.get("end_at"))))
 
     # ==================== RFID Reading ====================
-    def read_rfid_tag(self):
-        """Read RFID tag from SimpleMFRC522 reader."""
+    def read_rfid_tag(self, non_blocking=False, show_popup_on_error=True):
+        """Read RFID tag from SimpleMFRC522 reader.
+
+        Uses non-blocking polling mode when non_blocking=True.
+        """
         if SimpleMFRC522 is None:
-            self.show_error(f"RFID import failed: {RFID_IMPORT_ERROR}", show_popup=False)
-            QMessageBox.warning(self, "RFID Error", f"RFID import failed: {RFID_IMPORT_ERROR}")
+            if not self.rfid_error_reported:
+                self.show_error(f"RFID import failed: {RFID_IMPORT_ERROR}", show_popup=False)
+                if show_popup_on_error:
+                    QMessageBox.warning(self, "RFID Error", f"RFID import failed: {RFID_IMPORT_ERROR}")
+                self.rfid_error_reported = True
             return None, None
         
         try:
-            reader = SimpleMFRC522()
-            tag_id, tag_text = reader.read()
+            if self.rfid_reader is None:
+                self.rfid_reader = SimpleMFRC522()
+
+            if non_blocking and hasattr(self.rfid_reader, "read_no_block"):
+                tag_id, tag_text = self.rfid_reader.read_no_block()
+            else:
+                tag_id, tag_text = self.rfid_reader.read()
+
+            if not tag_id:
+                return None, None
+
+            now = time.monotonic()
+            # Avoid flooding UI with the same tag repeatedly during continuous polling.
+            if self.current_rfid == str(tag_id) and (now - self.last_rfid_read_at) < 1.5:
+                return tag_id, tag_text
+
             self.current_rfid = str(tag_id)
+            self.last_rfid_read_at = now
             self.tagDetectedLabel.setText(f"Tag detected: {tag_id}")
             self.tagDetectedLabel.show()
             self.scanFailedLabel.hide()
@@ -562,7 +632,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             return tag_id, tag_text
         except Exception as exc:
             self.show_error(f"RFID read failed: {exc}", show_popup=False)
-            QMessageBox.warning(self, "RFID Error", f"RFID read failed: {exc}")
+            if show_popup_on_error:
+                QMessageBox.warning(self, "RFID Error", f"RFID read failed: {exc}")
             return None, None
 
     # ==================== Locker Control ====================
