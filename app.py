@@ -90,6 +90,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.returnPushButton.clicked.connect(self.go_to_returnPage)
         self.historyPushButton.clicked.connect(self.go_to_historyPage)
         self.scanPageMenuPushButton.clicked.connect(self.go_to_menuPage)
+        self.menuPageScanPushButton.clicked.connect(self.go_to_scanPage)
 
         # Locker_gui style RFID reader control on scan page.
         self.setup_scanpage_rfid_reader_controls()

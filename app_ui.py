@@ -27,7 +27,8 @@ class Ui_MainWindow(object):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(848, 797)
-        MainWindow.setStyleSheet(u"")
+        MainWindow.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        MainWindow.setStyleSheet(u"background-color: rgb(65, 65, 65);")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.centralwidget.setStyleSheet(u"background-color: rgb(115, 115, 115);")
@@ -163,12 +164,12 @@ class Ui_MainWindow(object):
 
         self.gridLayout_4.addWidget(self.waitingForTagLabel, 6, 1, 1, 1)
 
-        self.label_2 = QLabel(self.iconFrame)
-        self.label_2.setObjectName(u"label_2")
-        self.label_2.setFont(font)
-        self.label_2.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.scanTagLabel = QLabel(self.iconFrame)
+        self.scanTagLabel.setObjectName(u"scanTagLabel")
+        self.scanTagLabel.setFont(font)
+        self.scanTagLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.gridLayout_4.addWidget(self.label_2, 1, 1, 1, 1)
+        self.gridLayout_4.addWidget(self.scanTagLabel, 1, 1, 1, 1)
 
 
         self.verticalLayout_8.addWidget(self.iconFrame)
@@ -258,49 +259,28 @@ class Ui_MainWindow(object):
         self.menuButtonFrame.setObjectName(u"menuButtonFrame")
         sizePolicy1.setHeightForWidth(self.menuButtonFrame.sizePolicy().hasHeightForWidth())
         self.menuButtonFrame.setSizePolicy(sizePolicy1)
+        self.menuButtonFrame.setFont(font)
         self.menuButtonFrame.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.menuButtonFrame.setFrameShape(QFrame.Shape.Box)
         self.menuButtonFrame.setFrameShadow(QFrame.Shadow.Plain)
         self.gridLayout = QGridLayout(self.menuButtonFrame)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
+        self.menuPageScanPushButton = QPushButton(self.menuButtonFrame)
+        self.menuPageScanPushButton.setObjectName(u"menuPageScanPushButton")
+        self.menuPageScanPushButton.setFont(font)
+        self.menuPageScanPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.menuPageScanPushButton.setStyleSheet(u"background-color: rgb(65, 65, 65);")
 
-        self.gridLayout.addItem(self.horizontalSpacer_8, 4, 2, 1, 1)
-
-        self.horizontalSpacer_7 = QSpacerItem(40, 20, QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout.addItem(self.horizontalSpacer_7, 6, 2, 1, 1)
-
-        self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout.addItem(self.horizontalSpacer_6, 6, 0, 1, 1)
-
-        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout.addItem(self.horizontalSpacer_3, 2, 2, 1, 1)
-
-        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout.addItem(self.horizontalSpacer_4, 2, 0, 1, 1)
+        self.gridLayout.addWidget(self.menuPageScanPushButton, 8, 1, 1, 1)
 
         self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
 
-        self.gridLayout.addItem(self.verticalSpacer_5, 7, 1, 1, 1)
+        self.gridLayout.addItem(self.verticalSpacer_5, 9, 1, 1, 1)
 
-        self.historyPushButton = QPushButton(self.menuButtonFrame)
-        self.historyPushButton.setObjectName(u"historyPushButton")
-        sizePolicy1.setHeightForWidth(self.historyPushButton.sizePolicy().hasHeightForWidth())
-        self.historyPushButton.setSizePolicy(sizePolicy1)
-        self.historyPushButton.setFont(font)
-        self.historyPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.historyPushButton.setStyleSheet(u"background-color: rgb(65, 65, 65);")
+        self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
 
-        self.gridLayout.addWidget(self.historyPushButton, 6, 1, 1, 1)
-
-        self.verticalSpacer_7 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
-
-        self.gridLayout.addItem(self.verticalSpacer_7, 3, 1, 1, 1)
+        self.gridLayout.addItem(self.verticalSpacer_6, 5, 1, 1, 1)
 
         self.returnPushButton = QPushButton(self.menuButtonFrame)
         self.returnPushButton.setObjectName(u"returnPushButton")
@@ -312,6 +292,28 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addWidget(self.returnPushButton, 4, 1, 1, 1)
 
+        self.verticalSpacer_7 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
+
+        self.gridLayout.addItem(self.verticalSpacer_7, 3, 1, 1, 1)
+
+        self.historyPushButton = QPushButton(self.menuButtonFrame)
+        self.historyPushButton.setObjectName(u"historyPushButton")
+        sizePolicy1.setHeightForWidth(self.historyPushButton.sizePolicy().hasHeightForWidth())
+        self.historyPushButton.setSizePolicy(sizePolicy1)
+        self.historyPushButton.setFont(font)
+        self.historyPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.historyPushButton.setStyleSheet(u"background-color: rgb(65, 65, 65);")
+
+        self.gridLayout.addWidget(self.historyPushButton, 6, 1, 1, 1)
+
+        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout.addItem(self.horizontalSpacer_8, 4, 2, 1, 1)
+
+        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout.addItem(self.horizontalSpacer_5, 4, 0, 1, 1)
+
         self.takePushButton = QPushButton(self.menuButtonFrame)
         self.takePushButton.setObjectName(u"takePushButton")
         sizePolicy1.setHeightForWidth(self.takePushButton.sizePolicy().hasHeightForWidth())
@@ -322,17 +324,37 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addWidget(self.takePushButton, 2, 1, 1, 1)
 
-        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_7 = QSpacerItem(40, 20, QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout.addItem(self.horizontalSpacer_5, 4, 0, 1, 1)
-
-        self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
-
-        self.gridLayout.addItem(self.verticalSpacer_6, 5, 1, 1, 1)
+        self.gridLayout.addItem(self.horizontalSpacer_7, 6, 2, 1, 1)
 
         self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
 
         self.gridLayout.addItem(self.verticalSpacer_4, 1, 1, 1, 1)
+
+        self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout.addItem(self.horizontalSpacer_6, 6, 0, 1, 1)
+
+        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout.addItem(self.horizontalSpacer_4, 2, 0, 1, 1)
+
+        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout.addItem(self.horizontalSpacer_3, 2, 2, 1, 1)
+
+        self.verticalSpacer_23 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.gridLayout.addItem(self.verticalSpacer_23, 7, 1, 1, 1)
+
+        self.horizontalSpacer_34 = QSpacerItem(40, 20, QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout.addItem(self.horizontalSpacer_34, 8, 0, 1, 1)
+
+        self.horizontalSpacer_35 = QSpacerItem(40, 20, QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout.addItem(self.horizontalSpacer_35, 8, 2, 1, 1)
 
 
         self.verticalLayout_2.addWidget(self.menuButtonFrame)
@@ -837,7 +859,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -850,11 +872,12 @@ class Ui_MainWindow(object):
         self.rfidPhotoLabel.setText("")
         self.scanFailedLabel.setText(QCoreApplication.translate("MainWindow", u"Scan failed", None))
         self.waitingForTagLabel.setText(QCoreApplication.translate("MainWindow", u"Waiting for tag...", None))
-        self.label_2.setText(QCoreApplication.translate("MainWindow", u"SCAN TAG", None))
+        self.scanTagLabel.setText(QCoreApplication.translate("MainWindow", u"SCAN TAG", None))
         self.scanPageMenuPushButton.setText(QCoreApplication.translate("MainWindow", u"MENU", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"RFID-Locker", None))
-        self.historyPushButton.setText(QCoreApplication.translate("MainWindow", u"HISTORY", None))
+        self.menuPageScanPushButton.setText(QCoreApplication.translate("MainWindow", u"SCAN", None))
         self.returnPushButton.setText(QCoreApplication.translate("MainWindow", u"RETURN", None))
+        self.historyPushButton.setText(QCoreApplication.translate("MainWindow", u"HISTORY", None))
         self.takePushButton.setText(QCoreApplication.translate("MainWindow", u"TAKE", None))
         self.takeProductLabel.setText(QCoreApplication.translate("MainWindow", u"SELECT PRODUCT TO TAKE", None))
         self.takeBackPushButton.setText(QCoreApplication.translate("MainWindow", u"BACK", None))
