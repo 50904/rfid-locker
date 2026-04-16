@@ -264,22 +264,84 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Update take/return combo boxes from DB products when available."""
         self.refresh_product_combo_boxes()
 
+    def ensure_product_lockers(self):
+        """Hardcode locker assignment: each active product uses locker == tuotenumero."""
+        if not self.db_available or self.db_conn is None:
+            return
+
+        updated_count = 0
+        try:
+            with self.db_conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT t.tuotenumero
+                    FROM public.tuote t
+                    WHERE t.aktiivinen = TRUE
+                    ORDER BY t.tuotenumero
+                    """
+                )
+                active_rows = cur.fetchall()
+
+                if not active_rows:
+                    return
+
+                for (tuotenumero,) in active_rows:
+                    lokero_number = tuotenumero
+                    auto_mac = f"STATICLOC-{lokero_number:06d}"
+
+                    cur.execute(
+                        """
+                        INSERT INTO public.lokerikko (lokero, mac_osoite)
+                        VALUES (%s, %s)
+                        ON CONFLICT (lokero) DO NOTHING
+                        """,
+                        (lokero_number, auto_mac),
+                    )
+
+                    # Keep exactly one locker mapping per product.
+                    cur.execute(
+                        """
+                        DELETE FROM public.tuotesijainti
+                        WHERE tuotenumero = %s
+                          AND lokero <> %s
+                        """,
+                        (tuotenumero, lokero_number),
+                    )
+
+                    cur.execute(
+                        """
+                        INSERT INTO public.tuotesijainti (lokero, tuotenumero)
+                        VALUES (%s, %s)
+                        ON CONFLICT (lokero, tuotenumero) DO NOTHING
+                        """,
+                        (lokero_number, tuotenumero),
+                    )
+
+                    updated_count += 1
+
+            if updated_count > 0:
+                print(f"Applied hardcoded lockers for {updated_count} products")
+        except Exception as exc:
+            print(f"Failed to ensure product lockers: {exc}")
+
     def refresh_product_combo_boxes(self):
         """Populate TAKE/RETURN product combos using loan schema tables."""
         self.take_items = []
         self.return_items = []
 
-        self.takeProductcCmboBox.blockSignals(True)
+        self.takeProductComboBox.blockSignals(True)
         self.returnProductcCmboBox.blockSignals(True)
-        self.takeProductcCmboBox.clear()
+        self.takeProductComboBox.clear()
         self.returnProductcCmboBox.clear()
 
         if not self.db_available or self.db_conn is None:
-            self.takeProductcCmboBox.addItem("Database offline")
+            self.takeProductComboBox.addItem("Database offline")
             self.returnProductcCmboBox.addItem("Database offline")
-            self.takeProductcCmboBox.blockSignals(False)
+            self.takeProductComboBox.blockSignals(False)
             self.returnProductcCmboBox.blockSignals(False)
             return
+
+        self.ensure_product_lockers()
 
         try:
             with self.db_conn.cursor() as cur:
@@ -287,14 +349,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     """
                     SELECT t.tuotenumero, t.tuote, COALESCE(t.tuotekuvaus, ''), ts.lokero
                     FROM public.tuote t
-                    JOIN public.tuotesijainti ts ON ts.tuotenumero = t.tuotenumero
+                    LEFT JOIN public.tuotesijainti ts ON ts.tuotenumero = t.tuotenumero
                     WHERE t.aktiivinen = TRUE
-                      AND NOT EXISTS (
-                          SELECT 1
-                          FROM public.lainaus l
-                          WHERE l.tuotenumero = t.tuotenumero
-                            AND l.palautusaika IS NULL
-                      )
                     ORDER BY t.tuote
                     """
                 )
@@ -320,7 +376,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                         "lokero": lokero,
                     }
                 )
-                self.takeProductcCmboBox.addItem(f"{tuote} (locker {lokero})")
+                self.takeProductComboBox.addItem(f"{tuote} (locker {lokero})")
 
             for lainausnumero, tuotenumero, tuote, kuvaus, lokero, rfid in return_rows:
                 self.return_items.append(
@@ -336,16 +392,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.returnProductcCmboBox.addItem(f"{tuote} (locker {lokero})")
 
             if not self.take_items:
-                self.takeProductcCmboBox.addItem("No available products")
+                self.takeProductComboBox.addItem("No products found")
             if not self.return_items:
                 self.returnProductcCmboBox.addItem("No borrowed products")
 
         except Exception as exc:
-            self.takeProductcCmboBox.addItem("Load failed")
+            self.takeProductComboBox.addItem("Load failed")
             self.returnProductcCmboBox.addItem("Load failed")
             print(f"Failed to load product combos: {exc}")
 
-        self.takeProductcCmboBox.blockSignals(False)
+        self.takeProductComboBox.blockSignals(False)
         self.returnProductcCmboBox.blockSignals(False)
 
     def resolve_selected_item(self, combo_box, items):
@@ -367,7 +423,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if env_rfid:
             return env_rfid
         if DEBUG:
-            return "67890"
+            return "532127170272"
         return None
 
     def get_active_user_name(self):
@@ -381,9 +437,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def handle_take_confirm(self):
         """Confirm TAKE flow using the new loan schema."""
-        selected_item = self.resolve_selected_item(self.takeProductcCmboBox, self.take_items)
+        selected_item = self.resolve_selected_item(self.takeProductComboBox, self.take_items)
         if selected_item is None:
             QMessageBox.warning(self, "Take", "No available product selected.")
+            return
+
+        if selected_item.get("lokero") is None:
+            QMessageBox.warning(self, "Take", "Selected product has no locker location (tuotesijainti missing).")
             return
 
         active_rfid = self.resolve_active_rfid()
@@ -450,6 +510,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 )
             return True, None
         except Exception as exc:
+            if "violates unique constraint" in str(exc).lower():
+                return False, f"Product already loaned. Must be returned first."
             return False, f"Failed to create loan: {exc}"
 
     def return_loan(self, selected_item):
@@ -956,7 +1018,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Connect to PostgreSQL and ensure loan schema tables exist."""
         try:
             self.db_conn = psycopg2.connect(
-                host=os.getenv("PGHOST", "localhost"),
+                host=os.getenv("PGHOST", "192.168.251.200"),
                 port=int(os.getenv("PGPORT", "5432")),
                 dbname=os.getenv("PGDATABASE", "rfid_lokero"),
                 user=os.getenv("PGUSER", "postgres"),

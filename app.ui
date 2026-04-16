@@ -60,7 +60,7 @@
           <enum>QFrame::Shape::NoFrame</enum>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="scanPage">
           <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1024,7 +1024,7 @@
                </spacer>
               </item>
               <item row="3" column="1">
-               <widget class="QComboBox" name="takeProductcCmboBox">
+               <widget class="QComboBox" name="takeProductComboBox">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>

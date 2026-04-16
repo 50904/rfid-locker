@@ -391,21 +391,21 @@ class Ui_MainWindow(object):
 
         self.gridLayout_2.addItem(self.horizontalSpacer_11, 3, 2, 1, 1)
 
-        self.takeProductcCmboBox = QComboBox(self.takeProductFrame)
-        self.takeProductcCmboBox.setObjectName(u"takeProductcCmboBox")
+        self.takeProductComboBox = QComboBox(self.takeProductFrame)
+        self.takeProductComboBox.setObjectName(u"takeProductComboBox")
         sizePolicy2 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)
         sizePolicy2.setHorizontalStretch(0)
         sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.takeProductcCmboBox.sizePolicy().hasHeightForWidth())
-        self.takeProductcCmboBox.setSizePolicy(sizePolicy2)
-        self.takeProductcCmboBox.setMinimumSize(QSize(0, 50))
+        sizePolicy2.setHeightForWidth(self.takeProductComboBox.sizePolicy().hasHeightForWidth())
+        self.takeProductComboBox.setSizePolicy(sizePolicy2)
+        self.takeProductComboBox.setMinimumSize(QSize(0, 50))
         font3 = QFont()
         font3.setPointSize(18)
-        self.takeProductcCmboBox.setFont(font3)
-        self.takeProductcCmboBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.takeProductcCmboBox.setStyleSheet(u"background-color: rgb(65, 65, 65);")
+        self.takeProductComboBox.setFont(font3)
+        self.takeProductComboBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.takeProductComboBox.setStyleSheet(u"background-color: rgb(65, 65, 65);")
 
-        self.gridLayout_2.addWidget(self.takeProductcCmboBox, 3, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.takeProductComboBox, 3, 1, 1, 1)
 
         self.takeProductLabel = QLabel(self.takeProductFrame)
         self.takeProductLabel.setObjectName(u"takeProductLabel")
@@ -859,7 +859,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(2)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
