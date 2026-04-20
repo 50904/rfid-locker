@@ -1669,7 +1669,7 @@
                     <string notr="true">background-color: rgb(65, 65, 65);</string>
                    </property>
                    <property name="calendarPopup">
-                    <bool>true</bool>
+                    <bool>false</bool>
                    </property>
                   </widget>
                  </item>
@@ -1738,7 +1738,7 @@
                     <string notr="true">background-color: rgb(65, 65, 65);</string>
                    </property>
                    <property name="calendarPopup">
-                    <bool>true</bool>
+                    <bool>false</bool>
                    </property>
                   </widget>
                  </item>

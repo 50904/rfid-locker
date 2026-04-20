@@ -643,7 +643,7 @@ class Ui_MainWindow(object):
         self.historyStartDateEdit.setFont(font3)
         self.historyStartDateEdit.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.historyStartDateEdit.setStyleSheet(u"background-color: rgb(65, 65, 65);")
-        self.historyStartDateEdit.setCalendarPopup(True)
+        self.historyStartDateEdit.setCalendarPopup(False)
 
         self.horizontalLayout_4.addWidget(self.historyStartDateEdit)
 
@@ -672,7 +672,7 @@ class Ui_MainWindow(object):
         self.historyEndDateEdit.setFont(font3)
         self.historyEndDateEdit.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.historyEndDateEdit.setStyleSheet(u"background-color: rgb(65, 65, 65);")
-        self.historyEndDateEdit.setCalendarPopup(True)
+        self.historyEndDateEdit.setCalendarPopup(False)
 
         self.horizontalLayout_5.addWidget(self.historyEndDateEdit)
 

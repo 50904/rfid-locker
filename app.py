@@ -12,7 +12,7 @@ from datetime import datetime
 import paho.mqtt.client as mqtt # MQTT client
 import psycopg2 # PostgreSQL driver
 from PySide6 import QtWidgets # QtWidgets
-from PySide6.QtWidgets import QCalendarWidget, QMessageBox, QLabel, QPushButton, QVBoxLayout, QGroupBox, QScrollArea, QWidget, QTabWidget, QTableWidgetItem # UI widgets
+from PySide6.QtWidgets import QCalendarWidget, QLabel, QPushButton, QVBoxLayout, QGroupBox, QScrollArea, QWidget, QTabWidget, QTableWidgetItem # UI widgets
 from PySide6.QtCore import QThreadPool, Slot, Qt, QByteArray, QTimer, QDate # Threading, slot-decorators and Qt
 from PySide6.QtGui import QPixmap, QCursor # Picture handling and cursor changes
 
@@ -56,6 +56,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.threadPool = QThreadPool.globalInstance()
         self.setupUi(self)
+        self.stackedWidget.setCurrentWidget(self.scanPage)
         
         # Locker state management variables
         self.lockers = {}  # {locker_id: QLabel}
@@ -84,6 +85,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.rfid_reader = None
         self.last_rfid_read_at = 0.0
         self.rfid_error_reported = False
+        self.pending_take_operations = {}  # {locker_alias: selected_item}
 
         # Connections for the menuPage buttons
         self.takePushButton.clicked.connect(self.go_to_takePage)
@@ -94,6 +96,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Locker_gui style RFID reader control on scan page.
         self.setup_scanpage_rfid_reader_controls()
+        self.setup_takepage_status_label()
 
         # Connections for the back buttons on each page
         self.takeBackPushButton.clicked.connect(self.go_to_menuPage)
@@ -165,6 +168,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     
     def go_to_takePage(self):
         self.refresh_locker_combo_boxes()
+        if not self.pending_take_operations:
+            self.set_take_status("")
         self.stackedWidget.setCurrentWidget(self.takePage)
     
     def go_to_returnPage(self):
@@ -202,6 +207,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.scanFailedLabel.setText(f"RFID import failed: {RFID_IMPORT_ERROR}")
             self.scanFailedLabel.show()
 
+    def setup_takepage_status_label(self):
+        """Add a status label for TAKE page locker events."""
+        self.takeStatusLabel = QLabel("")
+        self.takeStatusLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.takeStatusLabel.setMinimumHeight(42)
+        self.takeStatusLabel.setStyleSheet("color: rgb(220, 220, 220); font-size: 20px; font-weight: bold;")
+        self.verticalLayout_5.insertWidget(1, self.takeStatusLabel)
+
+    def set_take_status(self, message, is_error=False):
+        """Render TAKE page status text."""
+        color = "rgb(255, 120, 120)" if is_error else "rgb(220, 220, 220)"
+        self.takeStatusLabel.setStyleSheet(f"color: {color}; font-size: 20px; font-weight: bold;")
+        self.takeStatusLabel.setText(message)
+
     def handle_scanpage_read_button(self):
         """Manual scanPage RFID read via button."""
         self.set_info_status("Status: waiting for RFID tag...")
@@ -234,12 +253,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.scanFailedLabel.hide()
 
     def show_error(self, message, show_popup=False):
-        """Show error status in scan page labels and optional popup."""
+        """Show error status in scan page labels."""
         self.scanFailedLabel.setText(message)
         self.scanFailedLabel.show()
         self.tagDetectedLabel.hide()
-        if show_popup:
-            QMessageBox.warning(self, "Locker Error", message)
 
     def configure_page_functionality(self):
         """Wire up buttons and initialize take/return/history page controls."""
@@ -439,39 +456,43 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Confirm TAKE flow using the new loan schema."""
         selected_item = self.resolve_selected_item(self.takeProductComboBox, self.take_items)
         if selected_item is None:
-            QMessageBox.warning(self, "Take", "No available product selected.")
+            self.set_take_status("Valitse tuote ensin.", is_error=True)
             return
 
         if selected_item.get("lokero") is None:
-            QMessageBox.warning(self, "Take", "Selected product has no locker location (tuotesijainti missing).")
+            self.set_take_status("Tuotteelta puuttuu lokerosijainti.", is_error=True)
             return
 
         active_rfid = self.resolve_active_rfid()
         if not active_rfid:
-            QMessageBox.warning(self, "Take", "RFID is required. Scan a tag first.")
+            self.set_take_status("RFID puuttuu. Lue tagi ensin.", is_error=True)
             return
 
         locker_alias = self.resolve_locker_alias(selected_item["lokero"])
 
         sent = self.send_command(locker_alias, "open")
         if not sent:
+            self.set_take_status("Komentoa ei voitu lahettaa lokerolle.", is_error=True)
             return
 
         success, error_text = self.create_loan(active_rfid, selected_item)
         if not success:
-            QMessageBox.warning(self, "Take", error_text)
+            self.set_take_status(error_text, is_error=True)
             return
+
+        self.pending_take_operations[locker_alias] = selected_item
+        self.set_take_status("Odotetaan oven avautumista...")
 
         self.refresh_product_combo_boxes()
         self.refresh_history_filter_options()
         self.load_history_table()
-        QMessageBox.information(self, "Take", f"{selected_item['tuote']} borrowed from locker {selected_item['lokero']}.")
+        self.set_info_status(f"Status: borrowing {selected_item['tuote']} from locker {selected_item['lokero']}")
 
     def handle_return_confirm(self):
         """Confirm RETURN flow using the new loan schema."""
         selected_item = self.resolve_selected_item(self.returnProductcCmboBox, self.return_items)
         if selected_item is None:
-            QMessageBox.warning(self, "Return", "No borrowed product selected.")
+            self.show_error("No borrowed product selected.")
             return
 
         locker_alias = self.resolve_locker_alias(selected_item["lokero"])
@@ -482,13 +503,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         success, error_text = self.return_loan(selected_item)
         if not success:
-            QMessageBox.warning(self, "Return", error_text)
+            self.show_error(error_text)
             return
 
         self.refresh_product_combo_boxes()
         self.refresh_history_filter_options()
         self.load_history_table()
-        QMessageBox.information(self, "Return", f"{selected_item['tuote']} returned to locker {selected_item['lokero']}.")
+        self.set_info_status(f"Status: {selected_item['tuote']} returned to locker {selected_item['lokero']}.")
 
     def create_loan(self, active_rfid, selected_item):
         """Create a new loan row for selected product."""
@@ -662,8 +683,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if SimpleMFRC522 is None:
             if not self.rfid_error_reported:
                 self.show_error(f"RFID import failed: {RFID_IMPORT_ERROR}", show_popup=False)
-                if show_popup_on_error:
-                    QMessageBox.warning(self, "RFID Error", f"RFID import failed: {RFID_IMPORT_ERROR}")
                 self.rfid_error_reported = True
             return None, None
         
@@ -695,19 +714,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             return tag_id, tag_text
         except Exception as exc:
             self.show_error(f"RFID read failed: {exc}", show_popup=False)
-            if show_popup_on_error:
-                QMessageBox.warning(self, "RFID Error", f"RFID read failed: {exc}")
             return None, None
 
     # ==================== Locker Control ====================
     def send_command(self, locker_id, operation):
         """Send control command to locker via MQTT."""
         if not self.mqtt_available:
-            self.show_error("MQTT is offline. Command was not sent.", show_popup=True)
+            self.show_error("MQTT is offline. Command was not sent.")
             return False
 
         if locker_id in self.locker_mac_map and locker_id not in self.connected_lockers:
-            self.show_error(f"Error: {locker_id} disconnected.", show_popup=True)
+            self.show_error(f"Error: {locker_id} disconnected.")
             return False
 
         target_locker_id = self.locker_mac_map.get(locker_id, locker_id)
@@ -748,8 +765,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             return
 
         self.clear_pending_operation(locker_id)
+        self.pending_take_operations.pop(locker_id, None)
         error_msg = f"Error: no response from {locker_id}. Locker may be unreachable."
-        self.show_error(error_msg, show_popup=True)
+        self.show_error(error_msg)
         print(error_msg)
 
     # ==================== MQTT Handlers ====================
@@ -799,6 +817,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             if self.is_disconnect_event(event):
                 disconnected_alias = self.mac_locker_map.get(locker_id, locker_id)
                 self.remove_locker_by_identifier(locker_id)
+                self.pending_take_operations.pop(disconnected_alias, None)
                 self.show_error(
                     f"Error: {disconnected_alias} disconnected. Cannot control until reconnect.",
                     show_popup=False,
@@ -828,6 +847,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 else:
                     if trigger == "lock" and event in {"open", "closed"}:
                         self.clear_pending_operation(ui_locker_id)
+
+            normalized_trigger = str(trigger).strip().lower()
+            normalized_event = str(event).strip().lower()
+            if normalized_trigger == "lock" and ui_locker_id in self.pending_take_operations:
+                if normalized_event == "open":
+                    self.set_take_status("Ovi auki")
+                elif normalized_event == "closed":
+                    self.set_take_status("Lainaus onnistui")
+                    self.pending_take_operations.pop(ui_locker_id, None)
 
             print(f"Locker {ui_locker_id}: {trigger} / {event}")
             self.set_info_status(f"Status: {ui_locker_id} {trigger} / {event}")
